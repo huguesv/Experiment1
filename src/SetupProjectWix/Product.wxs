@@ -13,7 +13,8 @@
     </Property>
     
 		<Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="DllComponents" />
+      <ComponentGroupRef Id="ProductComponents" />
 		</Feature>
 	</Product>
 
@@ -34,7 +35,12 @@
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			 <Component Id="Manual" Win64="yes">
          <File Name="Manual.md" Source="..\..\docs\manual.md"/>
-			 </Component> 
+			 </Component>
 		</ComponentGroup>
-	</Fragment>
+    <ComponentGroup Id="DllComponents" Directory="MyLibraryDir">
+      <Component Id="LibraryDll" Win64="yes" Guid="842af675-ec1a-4284-b4cc-50a9b35b8748">
+        <File Id="LibraryDllFile" Name="$(var.MyLibrary.TargetName).dll" Source="$(var.MyLibrary.TargetDir)\MyLibrary.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
 </Wix>
