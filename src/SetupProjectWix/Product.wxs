@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="SetupProjectWix" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
+	<Product Id="*" Name="Experiment1" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
 		<Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate />
 
     <Condition Message="Please install AutoCAD 2025 first."><![CDATA[Installed OR AUTOCAD2025DIR]]></Condition>
+
+    <UIRef Id="WixUI_MinimalNoEula"/>
     
     <Property Id="AUTOCAD2025DIR">
       <RegistrySearch Id='AutoCadInstallDirRegistry' Win64='yes' Type='raw' Root='HKLM' Key='SOFTWARE\Autodesk\AutoCAD\R25.0\InstalledProducts' />
@@ -43,4 +45,51 @@
       </Component>
     </ComponentGroup>
   </Fragment>
+
+  <Fragment>
+    <!-- Copy/Paste/Edit of WixUI_Minimal.wxs -->
+    <!-- https://stackoverflow.com/questions/597025/how-to-build-a-minimal-wix-installer-ui-without-a-license-page -->
+    <UI Id="WixUI_MinimalNoEula">
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+      <Property Id="WixUI_Mode" Value="Minimal" />
+
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+      <DialogRef Id="WelcomeDlg" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+      <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+      <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+      <!-- Customized to not show EULA -->
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="PrepareDlg">1</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
+
+      <!--<InstallUISequence>
+        <Show Dialog="WelcomeDlg" Before="WelcomeEulaDlg">Installed AND PATCH</Show>
+        <Show Dialog="WelcomeEulaDlg" Before="ProgressDlg">NOT Installed</Show>
+      </InstallUISequence>-->
+
+      <Property Id="ARPNOMODIFY" Value="1" />
+    </UI>
+
+    <UIRef Id="WixUI_Common" />
+  </Fragment>
+
 </Wix>
