@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="SetupProjectWix" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
+		<Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+    <Condition Message="Please install AutoCAD 2025 first."><![CDATA[Installed OR AUTOCAD2025DIR]]></Condition>
+    
+    <Property Id="AUTOCAD2025DIR">
+      <RegistrySearch Id='AutoCadInstallDirRegistry' Win64='yes' Type='raw' Root='HKLM' Key='SOFTWARE\Autodesk\AutoCAD\R25.0\InstalledProducts' />
+    </Property>
+    
+		<Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFiles64Folder">
+        <Directory Id="HuguesValois" Name="HuguesValois">
+          <Directory Id="INSTALLFOLDER" Name="Experiment1" />
+        </Directory>
+      </Directory>
+      <Directory Id="AUTOCAD2025DIR" Name="AutoCadDir">
+        <Directory Id="MyLibraryDir" Name="MyLibrary" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			 <Component Id="Manual" Win64="yes">
+         <File Name="Manual.md" Source="..\..\docs\manual.md"/>
+			 </Component> 
+		</ComponentGroup>
+	</Fragment>
+</Wix>
