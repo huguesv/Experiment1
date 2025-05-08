@@ -18,8 +18,20 @@ jobs:
         dotnet-version: '8.0.x'
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
+
+    - name: Converts Markdown to HTML
+      uses: jaywcjlove/markdown-to-html-cli@main
+      with:
+        source: docs/manual.md
+        output: docs/manual.html
+
     - name: Restore NuGet pacakges
       run: msbuild src\Experiment1.slnx -t:restore
     - name: Build app for release
       run: msbuild src\Experiment1.slnx -t:build -property:Configuration=Release
   
+    - name: Upload binaries artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: manual
+        path: docs/manual.html
