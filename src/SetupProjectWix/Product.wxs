@@ -42,7 +42,7 @@
   <Fragment>
     <ComponentGroup Id="ProductComponents">
       <Component Id="Manual" Win64="yes" Directory="INSTALLFOLDER" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
-        <File Id="Manual" Name="Manual.md" Source="..\..\docs\manual.md" KeyPath="yes" />
+        <File Id="Manual" Name="Manual.html" Source="..\..\bin\docs\manual.html" KeyPath="yes" />
       </Component>
       <Component Id="ManualImages" Win64="yes" Directory="ManualImagesDir" Guid="963a26c2-2f91-40c3-a4da-276d039e0d21">
         <File Name="vs-logo.jpg" Source="..\..\docs\images\vs-logo.jpg"/>
