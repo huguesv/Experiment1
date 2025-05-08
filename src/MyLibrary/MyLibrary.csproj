@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <Target Name="NpmBuildDocs" BeforeTargets="BeforeBuild">
-    <MakeDir Directories="..\..\bin\docs"/>
-    <Exec Command="npm i markdown-to-html-cli -g" />
-    <Exec Command="markdown-to-html --source ..\..\docs\manual.md --output ..\..\bin\docs\manual.html" />
-  </Target>
 </Project>
