@@ -8,7 +8,7 @@
   <?define AutoCadPluginFolderName = "$(var.PluginName)" ?>
   <?define SetupCompanyName = "Hugues Valois" ?>
   <?define SetupUpgradeCode = "0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a" ?>
-  <?define SetupVersion = "1.4.15" ?>
+  <?define SetupVersion = "1.4.16" ?>
   <?define SetupProductName = "$(var.PluginName) for $(var.AutoCadName)" ?>
   <?define SetupVersionedProductName = "$(var.SetupProductName) $(var.SetupVersion)" ?>
 
@@ -76,7 +76,7 @@
         <Shortcut Id="ManualShortcut" Name="$(var.SetupProductName) Manual" Target="[#Manual]" />
         <Shortcut Id="ChangeLogShortcut" Name="$(var.SetupProductName) ChangeLog" Target="[#ChangeLog]" />
         <RemoveFolder Id="ProgramMenuProductFolder" On="uninstall"/>
-        <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]\[ProductVersion]' Type='string' Value='' KeyPath='yes' />
+        <RegistryValue Root='HKCU' Key='Software\$(var.SetupCompanyName)\$(var.SetupProductName)\$(var.SetupVersion)' Type='string' Value='' KeyPath='yes' />
       </Component>
     </ComponentGroup>
 
@@ -89,6 +89,14 @@
       </Component>
       <Component Id="LibraryDepsJson" Win64="yes" Guid="bc7f918b-0248-4060-b188-9e848ad462b2">
         <File Id="LibraryDepsJson" Name="$(var.MyLibrary.TargetName).deps.json" Source="$(var.MyLibrary.TargetDir)\MyLibrary.deps.json" />
+      </Component>
+      <Component Id="AutoloadRegistry" Win64="yes" Guid="1e9b68e2-0fff-49ff-8b91-a4b682657ee5">
+        <RegistryKey Root="HKLM" Key="Software\Autodesk\AutoCAD\R25.0\ACAD-8101\Applications\$(var.SetupCompanyName)$(var.PluginName)">
+          <RegistryValue Type="string" Name="LOADER" Value="[#LibraryDll]" KeyPath="yes" />
+          <RegistryValue Type="string" Name="DESCRIPTION" Value="$(var.SetupCompanyName)$(var.PluginName) Description" />
+          <RegistryValue Type="integer" Name="LOADCTRLS" Value="14" />
+          <RegistryValue Type="integer" Name="MANAGED" Value="1" />
+        </RegistryKey>
       </Component>
     </ComponentGroup>
   </Fragment>
