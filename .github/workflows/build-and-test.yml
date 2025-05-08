@@ -30,8 +30,15 @@ jobs:
     - name: Build app for release
       run: msbuild src\Experiment1.slnx -t:build -property:Configuration=Release
   
-    - name: Upload binaries artifact
+    - name: Upload manual artifact
       uses: actions/upload-artifact@v4
       with:
         name: manual
         path: docs/manual.html
+
+    - name: Upload setup artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: setup
+        path: bin/release/SetupProjectWix/Experiment1.msi
+

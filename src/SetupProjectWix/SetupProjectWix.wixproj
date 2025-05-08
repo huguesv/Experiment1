@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>0c86d6e9-93bf-423d-9e14-27a60b0c9d96</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>SetupProjectWix</OutputName>
+    <OutputName>Experiment1</OutputName>
     <OutputType>Package</OutputType>
     <OutputPath>..\..\bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
