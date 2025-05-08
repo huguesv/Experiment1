@@ -8,15 +8,13 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>SetupProjectWix</OutputName>
     <OutputType>Package</OutputType>
+    <OutputPath>..\..\bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName)</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SuppressIces>ICE03</SuppressIces>

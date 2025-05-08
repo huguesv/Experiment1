@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Experiment1" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
-		<Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
+  <Product Id="*" Name="Experiment1" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
+    <Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
 
     <Condition Message="Please install AutoCAD 2025 first."><![CDATA[Installed OR AUTOCAD2025DIR]]></Condition>
 
     <UIRef Id="WixUI_MinimalNoEula"/>
-    
+
     <Property Id="AUTOCAD2025DIR">
       <RegistrySearch Id='AutoCadInstallDirRegistry' Win64='yes' Type='raw' Root='HKLM' Key='SOFTWARE\Autodesk\AutoCAD\R25.0\InstalledProducts' />
     </Property>
-    
-		<Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
+
+    <Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
       <ComponentGroupRef Id="DllComponents" />
       <ComponentGroupRef Id="MenuComponents" />
       <ComponentGroupRef Id="ProductComponents" />
-		</Feature>
-	</Product>
+    </Feature>
+  </Product>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFiles64Folder">
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
         <Directory Id="HuguesValois" Name="HuguesValois">
-          <Directory Id="INSTALLFOLDER" Name="Experiment1" />
+          <Directory Id="INSTALLFOLDER" Name="Experiment1">
+            <Directory Id="ManualImagesDir" Name="Images" />
+          </Directory>
         </Directory>
       </Directory>
       <Directory Id="AUTOCAD2025DIR" Name="AutoCadDir">
@@ -37,12 +39,15 @@
     </Directory>
   </Fragment>
 
-	<Fragment>
-    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			 <Component Id="Manual" Win64="yes" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
-         <File Id="Manual" Name="Manual.md" Source="..\..\docs\manual.md" />
-			 </Component>
-      <Component Id="ChangeLog" Win64="yes" Guid="1b77673f-bd61-4af6-b59e-0fba1461b6a5">
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <Component Id="Manual" Win64="yes" Directory="INSTALLFOLDER" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
+        <File Id="Manual" Name="Manual.md" Source="..\..\docs\manual.md" KeyPath="yes" />
+      </Component>
+      <Component Id="ManualImages" Win64="yes" Directory="ManualImagesDir" Guid="963a26c2-2f91-40c3-a4da-276d039e0d21">
+        <File Name="vs-logo.jpg" Source="..\..\docs\images\vs-logo.jpg"/>
+      </Component>
+      <Component Id="ChangeLog" Win64="yes" Directory="INSTALLFOLDER" Guid="1b77673f-bd61-4af6-b59e-0fba1461b6a5">
         <File Id="ChangeLog" Name="ChangeLog.txt" Source="..\..\docs\ChangeLog.txt" />
       </Component>
     </ComponentGroup>
