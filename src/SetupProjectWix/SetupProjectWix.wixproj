@@ -18,6 +18,10 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <SuppressIces>ICE03</SuppressIces>
+    <SuppressSpecificWarnings>1076</SuppressSpecificWarnings>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>

@@ -16,6 +16,7 @@
     
 		<Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
       <ComponentGroupRef Id="DllComponents" />
+      <ComponentGroupRef Id="MenuComponents" />
       <ComponentGroupRef Id="ProductComponents" />
 		</Feature>
 	</Product>
@@ -30,15 +31,29 @@
       <Directory Id="AUTOCAD2025DIR" Name="AutoCadDir">
         <Directory Id="MyLibraryDir" Name="MyLibrary" />
       </Directory>
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="MyLibraryMenuDir" Name="Experiment1 Folder" />
+      </Directory>
     </Directory>
   </Fragment>
 
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			 <Component Id="Manual" Win64="yes">
-         <File Name="Manual.md" Source="..\..\docs\manual.md"/>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			 <Component Id="Manual" Win64="yes" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
+         <File Id="Manual" Name="Manual.md" Source="..\..\docs\manual.md" />
 			 </Component>
-		</ComponentGroup>
+      <Component Id="ChangeLog" Win64="yes" Guid="1b77673f-bd61-4af6-b59e-0fba1461b6a5">
+        <File Id="ChangeLog" Name="ChangeLog.txt" Source="..\..\docs\ChangeLog.txt" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="MenuComponents" Directory="MyLibraryMenuDir">
+      <Component Id="ManualMenuItem" Guid="2cebc30a-4fc3-461d-9522-cdab43640754" Win64="yes">
+        <Shortcut Id="ManualShortcut" Name="Experiment1 Manual" Target="[#Manual]" Description="Experiment1 Manual Description" />
+        <Shortcut Id="ChangeLogShortcut" Name="Experiment1 ChangeLog" Target="[#ChangeLog]" Description="Experiment1 Change Log" />
+        <RemoveFolder Id="MyLibraryMenuDir" On="uninstall"/>
+        <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]\[ProductVersion]' Type='string' Value='' KeyPath='yes' />
+      </Component>
+    </ComponentGroup>
     <ComponentGroup Id="DllComponents" Directory="MyLibraryDir">
       <Component Id="LibraryDll" Win64="yes" Guid="842af675-ec1a-4284-b4cc-50a9b35b8748">
         <File Id="LibraryDllFile" Name="$(var.MyLibrary.TargetName).dll" Source="$(var.MyLibrary.TargetDir)\MyLibrary.dll" />
