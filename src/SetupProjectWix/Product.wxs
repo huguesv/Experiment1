@@ -1,67 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This setup definition uses WiX v3 from https://github.com/wixtoolset/wix3/releases -->
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Experiment1" Language="1033" Version="1.0.0.0" Manufacturer="Hugues Valois" UpgradeCode="0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a">
+  <?define PluginName = "MyLibrary" ?>
+  <?define AutoCadName = "AutoCAD 2025" ?>
+  <?define AutoCadPluginFolderName = "$(var.PluginName)" ?>
+  <?define SetupCompanyName = "Hugues Valois" ?>
+  <?define SetupUpgradeCode = "0b0eb7e2-7cdf-40f1-a36c-72b6a25abc5a" ?>
+  <?define SetupVersion = "1.4.14" ?>
+  <?define SetupProductName = "$(var.PluginName) for $(var.AutoCadName)" ?>
+  <?define SetupVersionedProductName = "$(var.SetupProductName) $(var.SetupVersion)" ?>
+
+  <?define BuildDocsFolder = "..\..\docs" ?>
+  <?define BuildBinDocsFolder = "..\..\bin\docs" ?>
+
+  <Product Id="*" Name="$(var.SetupVersionedProductName)" Language="1033" Version="$(var.SetupVersion)" Manufacturer="$(var.SetupCompanyName)" UpgradeCode="$(var.SetupUpgradeCode)">
     <Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of this product is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
-    <Condition Message="Please install AutoCAD 2025 first."><![CDATA[Installed OR AUTOCAD2025DIR]]></Condition>
+    <Condition Message="$(var.AutoCadName) is required."><![CDATA[Installed OR AUTOCADINSTALLDIR]]></Condition>
 
     <UIRef Id="WixUI_MinimalNoEula"/>
 
-    <Property Id="AUTOCAD2025DIR">
+    <Property Id="AUTOCADINSTALLDIR">
       <RegistrySearch Id='AutoCadInstallDirRegistry' Win64='yes' Type='raw' Root='HKLM' Key='SOFTWARE\Autodesk\AutoCAD\R25.0\InstalledProducts' />
     </Property>
 
-    <Feature Id="ProductFeature" Title="SetupProjectWix" Level="1">
-      <ComponentGroupRef Id="DllComponents" />
-      <ComponentGroupRef Id="MenuComponents" />
-      <ComponentGroupRef Id="ProductComponents" />
+    <Feature Id="ProductFeature" Title="Complete" Level="1">
+      <ComponentGroupRef Id="AutoCadPluginComponents" />
+      <ComponentGroupRef Id="StartMenuComponents" />
+      <ComponentGroupRef Id="DocsComponents" />
+      <ComponentGroupRef Id="ImagesComponents" />
     </Feature>
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFiles64Folder">
-        <Directory Id="HuguesValois" Name="HuguesValois">
-          <Directory Id="INSTALLFOLDER" Name="Experiment1">
-            <Directory Id="ManualImagesDir" Name="Images" />
+        <Directory Id="ProgramFilesCompanyFolder" Name="$(var.SetupCompanyName)">
+          <Directory Id="INSTALLFOLDER" Name="$(var.SetupProductName)">
+            <Directory Id="ImagesFolder" Name="Images" />
           </Directory>
         </Directory>
       </Directory>
-      <Directory Id="AUTOCAD2025DIR" Name="AutoCadDir">
-        <Directory Id="MyLibraryDir" Name="MyLibrary" />
+      <Directory Id="AUTOCADINSTALLDIR" Name="AutoCadDir">
+        <Directory Id="AutoCadPluginFolder" Name="$(var.AutoCadPluginFolderName)" />
       </Directory>
       <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="MyLibraryMenuDir" Name="Experiment1 Folder" />
+        <Directory Id="ProgramMenuProductFolder" Name="$(var.SetupProductName)" />
       </Directory>
     </Directory>
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="ProductComponents">
-      <Component Id="Manual" Win64="yes" Directory="INSTALLFOLDER" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
-        <File Id="Manual" Name="Manual.html" Source="..\..\bin\docs\manual.html" KeyPath="yes" />
+    <ComponentGroup Id="DocsComponents" Directory="INSTALLFOLDER">
+      <Component Id="Manual" Win64="yes" Guid="356b2c1b-54c7-412e-914d-d9a17b63de17">
+        <File Id="Manual" Name="Manual.html" Source="$(var.BuildBinDocsFolder)\manual.html" KeyPath="yes" />
       </Component>
-      <Component Id="ManualImages" Win64="yes" Directory="ManualImagesDir" Guid="963a26c2-2f91-40c3-a4da-276d039e0d21">
-        <File Name="vs-logo.jpg" Source="..\..\docs\images\vs-logo.jpg"/>
-      </Component>
-      <Component Id="ChangeLog" Win64="yes" Directory="INSTALLFOLDER" Guid="1b77673f-bd61-4af6-b59e-0fba1461b6a5">
-        <File Id="ChangeLog" Name="ChangeLog.txt" Source="..\..\docs\ChangeLog.txt" />
+      <Component Id="ChangeLog" Win64="yes" Guid="1b77673f-bd61-4af6-b59e-0fba1461b6a5">
+        <File Id="ChangeLog" Name="ChangeLog.txt" Source="$(var.BuildDocsFolder)\ChangeLog.txt" KeyPath="yes" />
       </Component>
     </ComponentGroup>
-    <ComponentGroup Id="MenuComponents" Directory="MyLibraryMenuDir">
+
+    <ComponentGroup Id="ImagesComponents" Directory="ImagesFolder">
+      <Component Id="ManualImages" Win64="yes" Guid="963a26c2-2f91-40c3-a4da-276d039e0d21">
+        <File Name="vs-logo.jpg" Source="$(var.BuildDocsFolder)\images\vs-logo.jpg" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="StartMenuComponents" Directory="ProgramMenuProductFolder">
       <Component Id="ManualMenuItem" Guid="2cebc30a-4fc3-461d-9522-cdab43640754" Win64="yes">
-        <Shortcut Id="ManualShortcut" Name="Experiment1 Manual" Target="[#Manual]" Description="Experiment1 Manual Description" />
-        <Shortcut Id="ChangeLogShortcut" Name="Experiment1 ChangeLog" Target="[#ChangeLog]" Description="Experiment1 Change Log" />
-        <RemoveFolder Id="MyLibraryMenuDir" On="uninstall"/>
+        <Shortcut Id="ManualShortcut" Name="$(var.SetupProductName) Manual" Target="[#Manual]" />
+        <Shortcut Id="ChangeLogShortcut" Name="$(var.SetupProductName) ChangeLog" Target="[#ChangeLog]" />
+        <RemoveFolder Id="ProgramMenuProductFolder" On="uninstall"/>
         <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]\[ProductVersion]' Type='string' Value='' KeyPath='yes' />
       </Component>
     </ComponentGroup>
-    <ComponentGroup Id="DllComponents" Directory="MyLibraryDir">
+
+    <ComponentGroup Id="AutoCadPluginComponents" Directory="AutoCadPluginFolder">
       <Component Id="LibraryDll" Win64="yes" Guid="842af675-ec1a-4284-b4cc-50a9b35b8748">
-        <File Id="LibraryDllFile" Name="$(var.MyLibrary.TargetName).dll" Source="$(var.MyLibrary.TargetDir)\MyLibrary.dll" />
+        <File Id="LibraryDll" Name="$(var.MyLibrary.TargetName).dll" Source="$(var.MyLibrary.TargetDir)\MyLibrary.dll" />
+      </Component>
+      <Component Id="LibraryDllConfig" Win64="yes" Guid="a04a20e9-2fb5-4143-8eda-d7b6307768b0">
+        <File Id="LibraryDllConfig" Name="$(var.MyLibrary.TargetName).dll.config" Source="$(var.MyLibrary.TargetDir)\MyLibrary.dll.config" />
+      </Component>
+      <Component Id="LibraryDepsJson" Win64="yes" Guid="bc7f918b-0248-4060-b188-9e848ad462b2">
+        <File Id="LibraryDepsJson" Name="$(var.MyLibrary.TargetName).deps.json" Source="$(var.MyLibrary.TargetDir)\MyLibrary.deps.json" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -100,11 +127,6 @@
       <!-- Customized to not show EULA -->
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="PrepareDlg">1</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
-
-      <!--<InstallUISequence>
-        <Show Dialog="WelcomeDlg" Before="WelcomeEulaDlg">Installed AND PATCH</Show>
-        <Show Dialog="WelcomeEulaDlg" Before="ProgressDlg">NOT Installed</Show>
-      </InstallUISequence>-->
 
       <Property Id="ARPNOMODIFY" Value="1" />
     </UI>
