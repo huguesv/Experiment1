@@ -1,10 +1,8 @@
-name: Build and Test
+name: Publish
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -12,7 +10,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout repository
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -27,10 +25,32 @@ jobs:
 
     - name: Build app for release
       run: msbuild src\Experiment1.slnx -t:build -property:Configuration=Release
-  
+
     - name: Upload setup artifact
       uses: actions/upload-artifact@v4
       with:
         name: setup
         path: bin/release/SetupProjectWix/Experiment1.msi
 
+  release:
+    name: Upload Release Assets
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download binaries artifacts for all runtimes
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+        merge-multiple: true
+
+    - name: Display downloaded artifacts
+      run: ls -R release-artifacts
+
+    - name: Upload to release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          release-artifacts/*
