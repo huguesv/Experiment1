@@ -4,7 +4,7 @@
     <Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    <MediaTemplate />
+    <MediaTemplate EmbedCab="yes" />
 
     <Condition Message="Please install AutoCAD 2025 first."><![CDATA[Installed OR AUTOCAD2025DIR]]></Condition>
 

@@ -52,6 +52,7 @@
 	<Target Name="AfterBuild">
 	</Target>
 	-->
+  <!-- https://github.com/marketplace/actions/converts-markdown-text-to-html -->
   <Target Name="NpmBuildDocs" BeforeTargets="BeforeBuild">
     <MakeDir Directories="..\..\bin\docs"/>
     <Exec Command="npm i markdown-to-html-cli -g" />
